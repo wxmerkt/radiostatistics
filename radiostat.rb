@@ -16,12 +16,12 @@ require 'pp'
 baseURI = 'http://www.iheart.com/live/ajax/now_playing/' + stationID.to_s +  '/?_rel=435'
 url = baseURI
 
-dbname = "radiostat_station_" + stationID.to_s + ".db"
+dbname = "stat_station_" + stationID.to_s + ".db"
 if (!File.exist?(dbname)) 
 	`cp database.template #{dbname}`
 	puts "created database"
 end
-db = SQLite3::Database.new("radiostat_station_" + stationID.to_s + ".db")
+db = SQLite3::Database.open("radiostat_station_" + stationID.to_s + ".db")
 
 mostrecentsongs = []
 mostrecentartists = []
@@ -45,10 +45,11 @@ while true do
 	if (newSong.length > 0) 
 		query = "BEGIN;"
 		0.upto(newSong.length-1) do |i|
-			query += "insert into songs(time, artist, song) values('#{Time.now.to_i}', '#{newArtist[i].to_s}', '#{newSong[i].to_s}');"
+			query += "insert into songs(time, artist, song) values('#{Time.now.to_i}', '#{newArtist[i].to_s.gsub("'", "")}', '#{newSong[i].to_s.gsub("'", "")}');"
 			puts newArtist[i].to_s + ": " + newSong[i].to_s
 		end
 		query += "END;"
+		#puts query
 		db.execute_batch(query);
 	end
 
