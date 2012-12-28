@@ -21,7 +21,7 @@ if (!File.exist?(dbname))
 	`cp database.template #{dbname}`
 	puts "created database"
 end
-db = SQLite3::Database.open("radiostat_station_" + stationID.to_s + ".db")
+db = SQLite3::Database.new("stat_station_" + stationID.to_s + ".db")
 
 mostrecentsongs = []
 mostrecentartists = []
